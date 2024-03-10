@@ -1,6 +1,7 @@
 import argparse
 import random
 
+import cowsay
 import requests
 
 
@@ -48,13 +49,15 @@ def main():
     assert all(map(lambda x: len(x) == args.len, words))
 
     def ask(prompt: str, valid: list[str] = None) -> str:
-        a = input(prompt).strip()
+        cow = random.choice(cowsay.list_cows())
+        a = input(cowsay.cowsay(prompt, cow=cow)).strip()
         if valid:
             assert a in valid, "invalid word"
         return a
 
     def inform(format_string: str, bulls: int, cows: int) -> None:
-        print(format_string.format(bulls, cows))
+        cow = random.choice(cowsay.list_cows())
+        print(cowsay.cowsay(format_string.format(bulls, cows), cow=cow))
 
     print(f'Вам понадобилось {gameplay(ask, inform, words)} попыток')
 
