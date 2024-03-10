@@ -1,4 +1,7 @@
+import argparse
 import random
+
+import requests
 
 
 def bullscows(guess: str, secret: str) -> tuple[int, int]:
@@ -15,3 +18,46 @@ def gameplay(ask: callable, inform: callable, words: list[str]) -> int:
         b, c = bullscows(guessed, secret)
         inform("Быки: {}, Коровы: {}", b, c)
     return asked
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        prog='CowSay emulator',
+        description='Program is wrapper of cowsay-py module'
+    )
+    parser.add_argument('dict', type=str,
+                        help='path to dict or url')
+
+    parser.add_argument('-l', '--len', type=int, default=5,
+                        help='wordlen')
+
+    args = parser.parse_args()
+    words = []
+
+    try:
+        resp = requests.get(args.dict)
+        words = [x.strip() for x in resp.text.split()]
+    except:
+        try:
+            with open(args.dict, 'r') as file:
+                words = [x.strip() for x in file.readlines()]
+        except:
+            print('Cant get words')
+            return
+
+    assert all(map(lambda x: len(x) == args.len, words))
+
+    def ask(prompt: str, valid: list[str] = None) -> str:
+        a = input(prompt).strip()
+        if valid:
+            assert a in valid, "invalid word"
+        return a
+
+    def inform(format_string: str, bulls: int, cows: int) -> None:
+        print(format_string.format(bulls, cows))
+
+    print(f'Вам понадобилось {gameplay(ask, inform, words)} попыток')
+
+
+if __name__ == '__main__':
+    main()
