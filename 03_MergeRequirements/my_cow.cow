@@ -1,0 +1,10 @@
+$the_cow = <<EOF;
+$thoughts  \     /
+        \   \__ /
+         |   <$eyes>
+         \  ($eyes $eyes)\_______
+            ($tongue)\       )\/\
+                ||----w |
+                ||     ||
+
+EOF
